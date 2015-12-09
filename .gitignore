@@ -1,0 +1,18 @@
+# jvm compiled files
+*.jar
+*.class
+
+# lein specific files
+/.lein-*
+/.nrepl-port
+/.repl-*
+
+# dvsc files
+.hgignore
+.hg/
+
+# build artifacts
+/out
+/target
+/classes
+/checkouts
