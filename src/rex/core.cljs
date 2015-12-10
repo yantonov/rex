@@ -27,3 +27,11 @@
              reduce-rn :fn} r]
         (swap! store reduce-rn event-type event cursor))))
   @store)
+
+(defn dispatch [cursor action-creator]
+  (let [event (action-creator (partial dispatch-event cursor)
+                              @store
+                              cursor)]
+    (if (nil? event)
+      @store
+      (dispatch-event cursor event))))

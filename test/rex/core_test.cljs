@@ -60,3 +60,23 @@
     (sut/dispatch-event nil
                         (create-event :other-event-type :value2))
     (is (= [:value1 :value2] (:field @sut/store)))))
+
+(deftest dispatch-test
+  (do
+    (sut/reset-store!)
+    (sut/reset-reducers!)
+    (sut/defreducer :some-reducer
+      (fn [state
+           event-type
+           event
+           cursor]
+        (let [old-value (get state :field [])
+              event-value (get event :value :no-value)]
+          (assoc-in state [:field] (conj old-value event-value)))))
+    (let [action-creator (fn [value] (fn [dispatch cursor state]
+                                  (create-event :some-event-type value)))]
+      (sut/dispatch nil (action-creator :value1))
+      (is (= [:value1] (:field @sut/store)))
+      (sut/dispatch nil
+                    (action-creator :value2))
+      (is (= [:value1 :value2] (:field @sut/store))))))
