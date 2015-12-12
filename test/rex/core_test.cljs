@@ -1,19 +1,26 @@
 (ns rex.core-test
   (:require [rex.core :as cr]
+            [rex.cursor :as cur]
             [rex.reducer :as rd]
             [rex.middleware :as mw]
+            [rex.subscriber :as sb]
             [rex.helpers :as hp]
             [cljs.test :refer-macros [deftest testing is are]]))
 
+(defn setup! []
+  (cr/reset-store!)
+  (rd/reset-reducers!)
+  (mw/reset-middlewares!)
+  (sb/reset-subscribers!))
+
 (deftest reset-store-test
   (do
-    (cr/reset-store!)
+    (setup!)
     (is (= {} (cr/get-store)))))
 
 (deftest dispatch-event-test
   (do
-    (cr/reset-store!)
-    (rd/reset-reducers!)
+    (setup!)
     (rd/defreducer :some-reducer
       (fn [state
            event-type
@@ -31,8 +38,7 @@
 
 (deftest dispatch-test
   (do
-    (cr/reset-store!)
-    (rd/reset-reducers!)
+    (setup!)
     (rd/defreducer :some-reducer
       (fn [state
            event-type
@@ -50,7 +56,7 @@
 
 (deftest dispatch-using-middlewares-test
   (do
-    (mw/reset-middlewares!)
+    (setup!)
     (let [log-of-actions (atom [])]
       (mw/defmiddleware :log-action (fn [store next cursor action]
                                       (do
@@ -61,3 +67,31 @@
       (is (= [{:type :some-event-type
                :value :some-value}]
              @log-of-actions)))))
+
+(deftest notify-subscribers-on-change
+  (do
+    (setup!)
+
+    (let [watch-vec (atom [])]
+
+      (rd/defreducer :some-reducer
+        (fn [state
+             event-type
+             event
+             cursor]
+          (let [old-value (get state :field [])
+                event-value (get event :value :no-value)]
+            (assoc state :field (conj old-value event-value)))))
+
+      (sb/defsubscriber (cur/nest (cur/make-cursor) :field)
+        (fn [store-value]
+          (swap! watch-vec conj store-value)))
+
+      (cr/dispatch nil (hp/test-action-creator :some-event-type :value1))
+      (is (= [{:field [:value1]}]
+             @watch-vec))
+
+      (cr/dispatch nil (hp/test-action-creator :some-event-type :value2))
+      (is (= [{:field [:value1]}
+              {:field [:value1 :value2]}]
+             @watch-vec)))))

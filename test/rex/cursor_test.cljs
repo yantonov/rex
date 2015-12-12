@@ -51,3 +51,24 @@
         m {"a" {"b" 1}}]
     (is (= {"c" 123}
            (sut/update-state c m {"c" 123})))))
+
+(deftest get-local-state-with-empty-cursor-test
+  (let [c (sut/make-cursor)
+        m {"a" {"b" 123}}]
+    (is (= {"a" {"b" 123}}
+           (sut/get-local-state c m)))))
+
+(deftest get-local-state-test
+  (let [c (sut/make-cursor)
+        nested (sut/nest c "a")
+        m {"a" {"b" 123}}]
+    (is (= {"b" 123}
+           (sut/get-local-state nested m)))))
+
+(deftest get-local-state-with-invalid-cursor-test
+  (let [c (sut/make-cursor)
+        nested (sut/nest c "abracadabra")
+        m {"a" {"b" 123}}]
+    (is (nil?
+           (sut/get-local-state nested m)))))
+

@@ -10,7 +10,9 @@
 
   (zoom-in [this feature])
 
-  (update-state [this state new-local-state]))
+  (update-state [this state new-local-state])
+
+  (get-local-state [this state]))
 
 (deftype Cursor [items]
   ICursor
@@ -39,7 +41,10 @@
     (let [path (cursor-key this)]
       (if (empty? path)
         new-local-state
-        (assoc-in state (cursor-key this) new-local-state)))))
+        (assoc-in state (cursor-key this) new-local-state))))
+
+  (get-local-state [this state]
+    (get-in state (cursor-key this))))
 
 (defn make-cursor []
   (Cursor. []))
