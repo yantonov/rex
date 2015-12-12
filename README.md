@@ -1,10 +1,6 @@
 # rex
 
-A Clojure library designed to ... well, that part is up to you.
-
-## Usage
-
-FIXME
+Simple state management for client side.
 
 ## License
 
