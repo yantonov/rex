@@ -12,7 +12,7 @@
 (defn reset-store! []
   (reset! store *store-init-value*))
 
-(defn- dispatch-event [cursor event]
+(defn- dispatch-event-internal [cursor event]
   (let [event-type (get event :type :unknown)]
     (doseq [r @reducers]
       (let [{name :name
@@ -22,21 +22,26 @@
         (swap! store reduce-rn event-type event cursor))))
   @store)
 
-(defn- dispatch-event-with-middlewares []
-  (let [store-value-getter (fn [] @store)]
-    (reduce (fn [accumulated-dispatch-event-fn middleware]
-              (let [{name :name
-                     middleware-fn :fn} middleware]
-                (fn [cursor action]
-                  (middleware-fn store-value-getter
-                                 accumulated-dispatch-event-fn
-                                 cursor
-                                 action))))
-            dispatch-event
-            @middlewares)))
+(defn- dispatch-event-with-middlewares [store-value-getter
+                                        middlewares-getter]
+  (reduce (fn [accumulated-dispatch-event-fn middleware]
+            (let [{name :name
+                   middleware-fn :fn} middleware]
+              (fn [cursor action]
+                (middleware-fn store-value-getter
+                               accumulated-dispatch-event-fn
+                               cursor
+                               action))))
+          dispatch-event-internal
+          (middlewares-getter)))
+
+(defn dispatch-event [cursor event]
+  (let [decorator (dispatch-event-with-middlewares (fn [] @store)
+                                                   (fn [] @middlewares))]
+    (decorator cursor event)))
 
 (defn dispatch [cursor action-creator]
-  (let [dispatch-event-fn (dispatch-event-with-middlewares)]
+  (let [dispatch-event-fn dispatch-event]
     (let [event (action-creator (partial dispatch-event-fn cursor)
                                 @store
                                 cursor)]
