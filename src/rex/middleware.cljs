@@ -1,13 +1,18 @@
-(ns rex.middleware
-  (:require [rex.core :as c]))
+(ns rex.middleware)
+
+(defonce *middlewares-init-value* [])
+(defonce middlewares (atom *middlewares-init-value*))
 
 (defn reset-middlewares! []
-  (reset! c/middlewares c/*reducers-init-value*))
+  (reset! middlewares *middlewares-init-value*))
+
+(defn get-middlewares []
+  @middlewares)
 
 (defn defmiddleware
   "register middleware with name (for debug purposes) or without it"
   ([name middleware]
-   (swap! c/middlewares conj {:name name
+   (swap! middlewares conj {:name name
                               :fn middleware}))
   ([middleware]
    (defmiddleware nil middleware)))

@@ -1,13 +1,18 @@
-(ns rex.reducer
-  (:require [rex.core :as c]))
+(ns rex.reducer)
+
+(defonce *reducers-init-value* [])
+(defonce reducers (atom *reducers-init-value*))
 
 (defn reset-reducers! []
-  (reset! c/reducers c/*reducers-init-value*))
+  (reset! reducers *reducers-init-value*))
+
+(defn get-reducers []
+  @reducers)
 
 (defn defreducer
   "register reducer with name (for debug purposes) or without it"
   ([name reduce-fn]
-   (swap! c/reducers conj {:name name
+   (swap! reducers conj {:name name
                          :fn reduce-fn}))
   ([reduce-fn]
    (defreducer nil reduce-fn)))
