@@ -1,34 +1,29 @@
 (ns rex.reducer-test
-  (:require [rex.core :as sut]
+  (:require [rex.core :as c]
+            [rex.reducer :as r]
             [cljs.test :refer-macros [deftest testing is are]]))
 
 (deftest reset-reducers-test
   (do
-    (sut/reset-reducers!)
-    (is (= [] @sut/reducers))))
+    (r/reset-reducers!)
+    (is (= [] @c/reducers))))
 
 (deftest defreducer-with-name-test
   (do
-    (sut/reset-reducers!)
-    (sut/defreducer :r1 (fn [] 1))
-    (let [reducers @sut/reducers]
+    (r/reset-reducers!)
+    (r/defreducer :r1 r/id-reducer)
+    (let [reducers @c/reducers]
       (is (= 1 (count reducers)))
-      (is (= :r1 (-> reducers
-                     first
-                     :name)))
-      (is (not (nil? (-> reducers
-                         first
-                         :fn)))))))
+      (let [reducer (first reducers)]
+        (is (= :r1 (:name reducer)))
+        (is (not (nil? (:fn reducer))))))))
 
 (deftest defreducer-without-name-test
   (do
-    (sut/reset-reducers!)
-    (sut/defreducer (fn [] 1))
-    (let [reducers @sut/reducers]
+    (r/reset-reducers!)
+    (r/defreducer r/id-reducer)
+    (let [reducers @c/reducers]
       (is (= 1 (count reducers)))
-      (is (nil? (-> reducers
-                    first
-                    :name)))
-      (is (not (nil? (-> reducers
-                         first
-                         :fn)))))))
+      (let [reducer (first reducers)]
+        (is (nil? (:name reducer)))
+        (is (not (nil? (:fn reducer))))))))

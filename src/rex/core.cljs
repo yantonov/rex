@@ -12,19 +12,8 @@
 (defn reset-store! []
   (reset! store *store-init-value*))
 
-(defn reset-reducers! []
-  (reset! reducers *reducers-init-value*))
-
 (defn reset-middlewares! []
   (reset! middlewares *reducers-init-value*))
-
-(defn defreducer
-  "register reducer with name (for debug purposes) or without it"
-  ([name reduce-fn]
-   (swap! reducers conj {:name name
-                         :fn reduce-fn}))
-  ([reduce-fn]
-   (defreducer nil reduce-fn)))
 
 (defn defmiddleware
   "register middleware with name (for debug purposes) or without it"
