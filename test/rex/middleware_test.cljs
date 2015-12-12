@@ -1,18 +1,19 @@
 (ns rex.middleware-test
-  (:require [rex.core :as sut]
-            [rex.helpers :as h]
+  (:require [rex.core :as cr]
+            [rex.middleware :as mw]
+            [rex.helpers :as hp]
             [cljs.test :refer-macros [deftest testing is are]]))
 
 (deftest reset-middlewares-test
   (do
-    (sut/reset-middlewares!)
-    (is (= [] @sut/middlewares))))
+    (mw/reset-middlewares!)
+    (is (= [] @cr/middlewares))))
 
 (deftest defmiddleware-with-name-test
   (do
-    (sut/reset-middlewares!)
-    (sut/defmiddleware :middleware1 h/id-middleware)
-    (let [middlewares @sut/middlewares]
+    (mw/reset-middlewares!)
+    (mw/defmiddleware :middleware1 mw/id-middleware)
+    (let [middlewares @cr/middlewares]
       (is (= 1 (count middlewares)))
       (let [m (first middlewares)]
         (is (= :middleware1 (:name m)))
@@ -20,9 +21,9 @@
 
 (deftest defmiddleware-without-name-test
   (do
-    (sut/reset-middlewares!)
-    (sut/defmiddleware h/id-middleware)
-    (let [middlewares @sut/middlewares]
+    (mw/reset-middlewares!)
+    (mw/defmiddleware mw/id-middleware)
+    (let [middlewares @cr/middlewares]
       (is (= 1 (count middlewares)))
       (let [m (first middlewares)]
         (is (nil? (:name m)))
@@ -30,14 +31,14 @@
 
 (deftest using-middlewares-test
   (do
-    (sut/reset-middlewares!)
+    (mw/reset-middlewares!)
     (let [log-of-actions (atom [])]
-      (sut/defmiddleware :log-action (fn [store next cursor action]
-                                       (do
-                                         (swap! log-of-actions conj action)
-                                         (next cursor action))))
-      (sut/dispatch nil (h/test-action-creator :some-event-type
-                                               :some-value))
+      (mw/defmiddleware :log-action (fn [store next cursor action]
+                                      (do
+                                        (swap! log-of-actions conj action)
+                                        (next cursor action))))
+      (cr/dispatch nil (hp/test-action-creator :some-event-type
+                                              :some-value))
       (is (= [{:type :some-event-type
                :value :some-value}]
              @log-of-actions)))))

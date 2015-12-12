@@ -12,17 +12,6 @@
 (defn reset-store! []
   (reset! store *store-init-value*))
 
-(defn reset-middlewares! []
-  (reset! middlewares *reducers-init-value*))
-
-(defn defmiddleware
-  "register middleware with name (for debug purposes) or without it"
-  ([name middleware]
-   (swap! middlewares conj {:name name
-                            :fn middleware}))
-  ([middleware]
-   (defmiddleware nil middleware)))
-
 (defn- dispatch-event [cursor event]
   (let [event-type (get event :type :unknown)]
     (doseq [r @reducers]
