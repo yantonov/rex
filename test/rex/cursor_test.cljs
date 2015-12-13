@@ -37,7 +37,7 @@
     (is (= ["field1" "field2"]
            (sut/cursor-key (sut/zoom-in n "feature123"))))))
 
-(deftest update-state-test
+(deftest update-nested-state-test
   (let [c (sut/make-cursor)
         n (-> c
               (sut/nest "a")
@@ -46,7 +46,7 @@
     (is (= {"a" {"b" 2}}
            (sut/update-state n m 2)))))
 
-(deftest update-state-test
+(deftest update-whole-state-test
   (let [c (sut/make-cursor)
         m {"a" {"b" 1}}]
     (is (= {"c" 123}
@@ -69,6 +69,5 @@
   (let [c (sut/make-cursor)
         nested (sut/nest c "abracadabra")
         m {"a" {"b" 123}}]
-    (is (nil?
-           (sut/get-state nested m)))))
+    (is (nil? (sut/get-state nested m)))))
 
