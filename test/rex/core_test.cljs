@@ -81,7 +81,9 @@
              cursor]
           (let [old-value (get state :field [])
                 event-value (get event :value :no-value)]
-            (assoc state :field (conj old-value event-value)))))
+            (if (= event-type :some-event-type)
+              (assoc state :field (conj old-value event-value))
+              state))))
 
       (sb/defsubscriber (cur/nest (cur/make-cursor) :field)
         (fn [store-value]
@@ -92,6 +94,12 @@
              @watch-vec))
 
       (cr/dispatch nil (hp/test-action-creator :some-event-type :value2))
+      (is (= [{:field [:value1]}
+              {:field [:value1 :value2]}]
+             @watch-vec))
+
+      ;; no changes under cursor - no callback calls for subscriber
+      (cr/dispatch nil (hp/test-action-creator :other-event-type :other-value))
       (is (= [{:field [:value1]}
               {:field [:value1 :value2]}]
              @watch-vec)))))
