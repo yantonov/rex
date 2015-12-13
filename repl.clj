@@ -6,7 +6,7 @@
 
 (cljs.build.api/build sources
                       {:main 'rex.repl.core
-                       :output-to "out/main.js"
+                       :output-to "out/rex.repl.js"
                        :verbose true})
 
 (cljs.repl/repl (cljs.repl.browser/repl-env)
