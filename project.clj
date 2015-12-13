@@ -8,23 +8,22 @@
   :plugins [[lein-cljsbuild "1.1.1"]]
   :cljsbuild
   {:builds
-   [{:id  "production"
-     :source-paths ["src"]
+   {:production
+    {:source-paths ["src"]
      :compiler {
                 :output-to "target/rex.js"
                 :source-map "target/rex.js.map"
                 :optimizations :whitespace
                 :pretty-print false}}
 
-    {:id ":unittest"
-     :source-paths ["src" "test"]
+    :unittest
+    {:source-paths ["src" "test"]
+     :compiler {:output-to "target/rex.testable.js"
+                :optimizations :whitespace
+                :pretty-print false}
      :notify-command ["phantomjs"
                       "phantom/unit-test.js"
-                      "phantom/unit-test.html"]
-     :compiler {
-                :output-to "target/rex.testable.js"
-                :optimizations :whitespace
-                :pretty-print false}}]
+                      "phantom/unit-test.html"]}}
    :test-commands {"unit-tests"
                    ["phantomjs"
                     "phantom/unit-test.js"
