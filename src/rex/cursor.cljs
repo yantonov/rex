@@ -12,7 +12,7 @@
 
   (update-state [this state new-local-state])
 
-  (get-local-state [this state]))
+  (get-state [this state]))
 
 (deftype Cursor [items]
   ICursor
@@ -43,7 +43,7 @@
         new-local-state
         (assoc-in state (cursor-key this) new-local-state))))
 
-  (get-local-state [this state]
+  (get-state [this state]
     (get-in state (cursor-key this))))
 
 (defn make-cursor []

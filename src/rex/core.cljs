@@ -18,7 +18,7 @@
   (swap! store fn))
 
 (defn- deref-state-by-cursor [cursor state]
-  (cur/get-local-state cursor state))
+  (cur/get-state cursor state))
 
 (defn dispatch-event [cursor event]
   (dpt/dispatch-event get-store
