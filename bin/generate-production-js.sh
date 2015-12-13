@@ -4,4 +4,4 @@ SCRIPT_DIR=$(cd `dirname $0` && pwd)
 
 cd $SCRIPT_DIR/../
 
-lein with-profile production cljsbuild once
+lein cljsbuild once production
