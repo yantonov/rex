@@ -58,10 +58,10 @@
   (do
     (setup!)
     (let [log-of-actions (atom [])]
-      (mw/defmiddleware :log-action (fn [store next cursor action]
+      (mw/defmiddleware :log-action (fn [cursor action store next-dispatch-fn]
                                       (do
                                         (swap! log-of-actions conj action)
-                                        (next cursor action))))
+                                        (next-dispatch-fn cursor action))))
       (cr/dispatch nil (hp/test-action-creator :some-event-type
                                                :some-value))
       (is (= [{:type :some-event-type

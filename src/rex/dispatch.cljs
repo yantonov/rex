@@ -21,9 +21,9 @@
       (doseq [subscriber (get-subscribers)]
         (let [{cursor :cursor
                callback :fn} subscriber
-              new-zoomed-value (deref-state-by-cursor cursor new-store-value)
-              old-zoomed-value (deref-state-by-cursor cursor old-store-value)
-              ]
+               new-zoomed-value (deref-state-by-cursor cursor new-store-value)
+               old-zoomed-value (deref-state-by-cursor cursor old-store-value)
+               ]
           (if (not (= new-zoomed-value old-zoomed-value))
             (callback new-store-value)))))
     (get-store)))
@@ -38,10 +38,10 @@
             (let [{name :name
                    middleware-fn :fn} middleware]
               (fn [cursor action]
-                (middleware-fn get-store
-                               accumulated-dispatch-event-fn
-                               cursor
-                               action))))
+                (middleware-fn cursor
+                               action
+                               get-store
+                               accumulated-dispatch-event-fn))))
           (partial dispatch-event-internal
                    get-store
                    update-store
