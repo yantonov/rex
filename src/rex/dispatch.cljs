@@ -22,8 +22,7 @@
         (let [{cursor :cursor
                callback :fn} subscriber
                new-zoomed-value (deref-state-by-cursor cursor new-store-value)
-               old-zoomed-value (deref-state-by-cursor cursor old-store-value)
-               ]
+               old-zoomed-value (deref-state-by-cursor cursor old-store-value)]
           (if (not (= new-zoomed-value old-zoomed-value))
             (callback new-store-value)))))
     (get-store)))

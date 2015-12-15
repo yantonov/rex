@@ -2,14 +2,17 @@
   (:require [rex.subscriber :as sc]
             [cljs.test :refer-macros [deftest testing is are]]))
 
+(defn- setup! []
+  (sc/reset-subscribers!))
+
 (deftest reset-subscribers-test
   (do
-    (sc/reset-subscribers!)
+    (setup!)
     (is (= [] (sc/get-subscribers)))))
 
 (deftest defsubscriver-test
   (do
-    (sc/reset-subscribers!)
+    (setup!)
     (sc/defsubscriber :some-cursor-value sc/empty-subscriber)
     (let [subscribers (sc/get-subscribers)]
       (is (= 1 (count subscribers)))

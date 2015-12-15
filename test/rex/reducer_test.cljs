@@ -2,14 +2,17 @@
   (:require [rex.reducer :as r]
             [cljs.test :refer-macros [deftest testing is are]]))
 
+(defn- setup! []
+  (r/reset-reducers!))
+
 (deftest reset-reducers-test
   (do
-    (r/reset-reducers!)
+    (setup!)
     (is (= [] (r/get-reducers)))))
 
 (deftest defreducer-with-name-test
   (do
-    (r/reset-reducers!)
+    (setup!)
     (r/defreducer :r1 r/id-reducer)
     (let [reducers (r/get-reducers)]
       (is (= 1 (count reducers)))
@@ -19,7 +22,7 @@
 
 (deftest defreducer-without-name-test
   (do
-    (r/reset-reducers!)
+    (setup!)
     (r/defreducer r/id-reducer)
     (let [reducers (r/get-reducers)]
       (is (= 1 (count reducers)))

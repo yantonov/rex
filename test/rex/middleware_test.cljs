@@ -3,14 +3,17 @@
             [rex.helpers :as hp]
             [cljs.test :refer-macros [deftest testing is are]]))
 
+(defn- setup! []
+  (mw/reset-middlewares!))
+
 (deftest reset-middlewares-test
   (do
-    (mw/reset-middlewares!)
+    (setup!)
     (is (= [] (mw/get-middlewares)))))
 
 (deftest defmiddleware-with-name-test
   (do
-    (mw/reset-middlewares!)
+    (setup!)
     (mw/defmiddleware :middleware1 mw/id-middleware)
     (let [middlewares (mw/get-middlewares)]
       (is (= 1 (count middlewares)))
@@ -20,7 +23,7 @@
 
 (deftest defmiddleware-without-name-test
   (do
-    (mw/reset-middlewares!)
+    (setup!)
     (mw/defmiddleware mw/id-middleware)
     (let [middlewares (mw/get-middlewares)]
       (is (= 1 (count middlewares)))
