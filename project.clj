@@ -1,4 +1,4 @@
-(defproject rex "0.1.0-SNAPSHOT"
+(defproject rex "0.0.1-SNAPSHOT"
   :description "simple state management for client side development"
   :url "https://github.com/yantonov/rex"
   :license {:name "Eclipse Public License"
@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.170"]]
   :plugins [[lein-cljsbuild "1.1.1"]]
+  :source-paths ["src"]
   :cljsbuild
   {:builds
    {:production
