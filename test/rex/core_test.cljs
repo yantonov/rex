@@ -90,16 +90,16 @@
           (swap! watch-vec conj store-value)))
 
       (cr/dispatch nil (hp/test-action-creator :some-event-type :value1))
-      (is (= [{:field [:value1]}]
+      (is (= [[:value1]]
              @watch-vec))
 
       (cr/dispatch nil (hp/test-action-creator :some-event-type :value2))
-      (is (= [{:field [:value1]}
-              {:field [:value1 :value2]}]
+      (is (= [[:value1]
+              [:value1 :value2]]
              @watch-vec))
 
       ;; no changes under cursor - no callback calls for subscriber
       (cr/dispatch nil (hp/test-action-creator :other-event-type :other-value))
-      (is (= [{:field [:value1]}
-              {:field [:value1 :value2]}]
+      (is (= [[:value1]
+              [:value1 :value2]]
              @watch-vec)))))

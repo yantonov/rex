@@ -24,7 +24,7 @@
                new-zoomed-value (deref-state-by-cursor cursor new-store-value)
                old-zoomed-value (deref-state-by-cursor cursor old-store-value)]
           (if (not (= new-zoomed-value old-zoomed-value))
-            (callback new-store-value)))))
+            (callback new-zoomed-value)))))
     (get-store)))
 
 (defn- dispatch-event-with-middlewares [get-store
