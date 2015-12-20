@@ -80,7 +80,7 @@
                                    get-middlewares
                                    get-subscribers
                                    deref-state-by-cursor)]
-    (let [event (action-creator (partial dispatch-event-fn cursor)
+    (let [event (action-creator dispatch-event-fn
                                 get-store
                                 cursor)]
       (if (nil? event)
