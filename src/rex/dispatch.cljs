@@ -81,7 +81,7 @@
                                    get-subscribers
                                    deref-state-by-cursor)]
     (let [event (action-creator (partial dispatch-event-fn cursor)
-                                (get-store)
+                                get-store
                                 cursor)]
       (if (nil? event)
         (get-store)
