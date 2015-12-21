@@ -5,7 +5,8 @@
             [rex.middleware-test]
             [rex.subscriber-test]
             [rex.ext.cursor-test]
-            [rex.ext.action-creator-test]))
+            [rex.ext.action-creator-test]
+            [rex.ext.reducer-for-event-test]))
 
 (enable-console-print!)
 
@@ -18,6 +19,7 @@
         'rex.subscriber-test
         'rex.ext.cursor-test
         'rex.ext.action-creator-test
+        'rex.ext.reducer-for-event-test
         ))
     0
     1))
