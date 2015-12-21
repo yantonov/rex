@@ -1,4 +1,4 @@
-(ns rex.ext.reducer-for-event
+(ns rex.ext.reducer-for-type
   (:require [rex.reducer :as r]))
 
 (defn reducer-for-type

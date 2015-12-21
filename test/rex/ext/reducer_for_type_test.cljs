@@ -1,5 +1,5 @@
-(ns rex.ext.reducer-for-event-test
-  (:require [rex.ext.reducer-for-event :as sut]
+(ns rex.ext.reducer-for-type-test
+  (:require [rex.ext.reducer-for-type :as sut]
             [cljs.test :refer-macros [deftest testing is are]]
             [rex.core :as cr]
             [rex.reducer :as rd]
