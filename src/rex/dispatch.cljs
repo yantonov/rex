@@ -1,88 +1,53 @@
 (ns rex.dispatch)
 
-(defn- dispatch-event-internal [get-store
+(defn- dispatch-using-reducers [get-store
                                 update-store
                                 get-reducers
                                 get-subscribers
-                                deref-state-by-cursor
-                                cursor
-                                event]
-  (let [event-type (get event :type :unknown)
-        old-store-value (get-store)]
-    (doseq [r (get-reducers)]
+                                action]
+  (let [old-store-value (get-store)]
+    ;; TODO: single update
+    (doseq [reducer (get-reducers)]
       (let [{name :name
-             reduce-rn :fn} r]
+             reduce-fn :fn} reducer]
         (update-store (fn [store-value]
-                        (reduce-rn store-value
-                                   event-type
-                                   event
-                                   cursor)))))
+                        (reduce-fn store-value action)))))
     (let [new-store-value (get-store)]
       (doseq [subscriber (get-subscribers)]
-        (let [{cursor :cursor
-               callback :fn} subscriber
-               new-zoomed-value (deref-state-by-cursor cursor new-store-value)
-               old-zoomed-value (deref-state-by-cursor cursor old-store-value)]
-          (if (not (= new-zoomed-value old-zoomed-value))
-            (callback new-zoomed-value)))))
+        (let [{callback :fn} subscriber]
+          (callback old-store-value
+                    new-store-value))))
     (get-store)))
 
-(defn- dispatch-event-with-middlewares [get-store
-                                        update-store
-                                        get-reducers
-                                        get-middlewares
-                                        get-subscribers
-                                        deref-state-by-cursor]
-  (reduce (fn [accumulated-dispatch-event-fn middleware]
+(defn- dispatch-using-middlewares [get-store
+                                   update-store
+                                   get-reducers
+                                   get-subscribers
+                                   get-middlewares]
+  (reduce (fn [accumulated-dispatch-fn middleware]
             (let [{name :name
                    middleware-fn :fn} middleware]
-              (fn [cursor action]
-                (middleware-fn cursor
-                               action
+              (fn [action]
+                (middleware-fn action
                                get-store
-                               accumulated-dispatch-event-fn))))
-          (partial dispatch-event-internal
+                               accumulated-dispatch-fn))))
+          (partial dispatch-using-reducers
                    get-store
                    update-store
                    get-reducers
-                   get-subscribers
-                   deref-state-by-cursor)
+                   get-subscribers)
           (get-middlewares)))
-
-(defn dispatch-event [get-store
-                      update-store
-                      get-reducers
-                      get-middlewares
-                      get-subscribers
-                      deref-state-by-cursor
-                      cursor
-                      event]
-  (let [decorator (dispatch-event-with-middlewares get-store
-                                                   update-store
-                                                   get-reducers
-                                                   get-middlewares
-                                                   get-subscribers
-                                                   deref-state-by-cursor)]
-    (decorator cursor event)))
 
 (defn dispatch [get-store
                 update-store
                 get-reducers
-                get-middlewares
                 get-subscribers
-                deref-state-by-cursor
-                cursor
-                action-creator]
-  (let [dispatch-event-fn (partial dispatch-event
-                                   get-store
-                                   update-store
-                                   get-reducers
-                                   get-middlewares
-                                   get-subscribers
-                                   deref-state-by-cursor)]
-    (let [event (action-creator dispatch-event-fn
-                                get-store
-                                cursor)]
-      (if (nil? event)
-        (get-store)
-        (dispatch-event-fn cursor event)))))
+                get-middlewares
+                action]
+  (let [dispatch-fn (dispatch-using-middlewares
+                             get-store
+                             update-store
+                             get-reducers
+                             get-subscribers
+                             get-middlewares)]
+    (dispatch-fn action)))

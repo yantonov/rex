@@ -2,8 +2,7 @@
   (:require [rex.reducer :as rc]
             [rex.middleware :as mw]
             [rex.dispatch :as dpt]
-            [rex.subscriber :as sb]
-            [rex.cursor :as cur]))
+            [rex.subscriber :as sb]))
 
 (defonce *store-init-value* {})
 (defonce store (atom *store-init-value*))
@@ -17,25 +16,10 @@
 (defn- update-store [fn]
   (swap! store fn))
 
-(defn- deref-state-by-cursor [cursor state]
-  (cur/get-state cursor state))
-
-(defn dispatch-event [cursor event]
-  (dpt/dispatch-event get-store
-                      update-store
-                      rc/get-reducers
-                      mw/get-middlewares
-                      sb/get-subscribers
-                      deref-state-by-cursor
-                      cursor
-                      event))
-
-(defn dispatch [cursor action-creator]
+(defn dispatch [action]
   (dpt/dispatch get-store
                 update-store
                 rc/get-reducers
-                mw/get-middlewares
                 sb/get-subscribers
-                deref-state-by-cursor
-                cursor
-                action-creator))
+                mw/get-middlewares
+                action))

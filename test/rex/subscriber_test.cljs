@@ -10,12 +10,23 @@
     (setup!)
     (is (= [] (sc/get-subscribers)))))
 
-(deftest defsubscriver-test
+(deftest defsubscriver-test-with-meta
   (do
     (setup!)
-    (sc/defsubscriber :some-cursor-value sc/empty-subscriber)
+    (sc/defsubscriber :some-meta sc/empty-subscriber)
     (let [subscribers (sc/get-subscribers)]
       (is (= 1 (count subscribers)))
       (let [subscriber (first subscribers)]
-        (is (= :some-cursor-value (:cursor subscriber)))
+        (is (= :some-meta (:meta subscriber)))
         (is (not (nil? (:fn subscriber))))))))
+
+(deftest defsubscriver-test-without-meta
+  (do
+    (setup!)
+    (sc/defsubscriber sc/empty-subscriber)
+    (let [subscribers (sc/get-subscribers)]
+      (is (= 1 (count subscribers)))
+      (let [subscriber (first subscribers)]
+        (is (nil? (:meta subscriber)))
+        (is (not (nil? (:fn subscriber))))))))
+

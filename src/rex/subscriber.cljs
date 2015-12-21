@@ -9,11 +9,14 @@
 (defn get-subscribers []
   @subscribers)
 
-(defn empty-subscriber [store-value]
-  ;; do somthing
+(defn empty-subscriber [old-value new-value]
+  ;; do something
   )
 
 (defn defsubscriber
-  ([cursor subscriber-callback]
-   (swap! subscribers conj {:cursor cursor
-                            :fn subscriber-callback})))
+  ([meta subscriber-callback]
+   (swap! subscribers conj {:meta meta
+                            :fn subscriber-callback}))
+
+  ([callback]
+   (defsubscriber nil callback)))

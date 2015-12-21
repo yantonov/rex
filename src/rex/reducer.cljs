@@ -19,5 +19,5 @@
 
 (defn id-reducer
   "trivial reducer, returns state as is"
-  [store event-type event cursor]
+  [store action]
   store)

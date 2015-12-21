@@ -1,5 +1,5 @@
-(ns rex.cursor-test
-  (:require [rex.cursor :as sut]
+(ns rex.ext.cursor-test
+  (:require [rex.ext.cursor :as sut]
             [cljs.test :refer-macros [deftest testing is are]]))
 
 (deftest root-cursor-test

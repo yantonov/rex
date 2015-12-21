@@ -1,6 +1,5 @@
 (ns rex.middleware-test
   (:require [rex.middleware :as mw]
-            [rex.helpers :as hp]
             [cljs.test :refer-macros [deftest testing is are]]))
 
 (defn- setup! []

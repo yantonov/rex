@@ -1,4 +1,4 @@
-(ns rex.cursor
+(ns rex.ext.cursor
   (:require [rex.utils :as util]))
 
 (defprotocol ICursor
