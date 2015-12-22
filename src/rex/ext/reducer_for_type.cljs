@@ -10,4 +10,4 @@
          store))))
 
   ([type reducer]
-   (recucer-for-type nil type reducer)))
+   (reducer-for-type nil type reducer)))

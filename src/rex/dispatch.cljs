@@ -14,7 +14,7 @@
                         (reduce-fn store-value action)))))
     (let [new-store-value (get-store)]
       (doseq [watcher (get-watchers)]
-        (let [{callback :fn} subscriber]
+        (let [{callback :fn} watcher]
           (callback old-store-value
                     new-store-value))))
     (get-store)))
