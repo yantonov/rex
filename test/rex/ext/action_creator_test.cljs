@@ -71,10 +71,30 @@
         (assoc-in state [:field] (conj old-field-value event-value)))))
 
   (is (= {:field [:value1 :value2]}
-       (cr/dispatch
-        (fn [dispatch-fn get-store]
-          (dispatch-fn {:value :value1})
-          (dispatch-fn {:value :value2})
-          nil))))
+         (cr/dispatch
+          (fn [dispatch-fn get-store]
+            (dispatch-fn {:value :value1})
+            (dispatch-fn {:value :value2})
+            nil))))
 
   (is (= {:field [:value1 :value2]} (cr/get-store))))
+
+(deftest action-creator-can-have-another-action-creator-inside
+  (setup!)
+
+  (mw/defmiddleware :action-creator-middleware
+    sut/action-creator-middleware)
+
+  (rd/defreducer :some-reducer
+    (fn [state action]
+      (let [old-field-value (get state :field [])
+            event-value (get action :value :no-value)]
+        (assoc-in state [:field] (conj old-field-value event-value)))))
+
+  (cr/dispatch
+   (fn [dispatch-fn get-store]
+     (dispatch-fn {:value :value1})
+     (dispatch-fn (fn [d s]
+                    (d {:value :value2})))))
+
+  (is (= [:value1 :value2] (:field (cr/get-store)))))
