@@ -3,7 +3,7 @@
             [rex.core-test]
             [rex.reducer-test]
             [rex.middleware-test]
-            [rex.subscriber-test]
+            [rex.watcher-test]
             [rex.ext.cursor-test]
             [rex.ext.action-creator-test]
             [rex.ext.reducer-for-type-test]))
@@ -16,7 +16,7 @@
         'rex.core-test
         'rex.reducer-test
         'rex.middleware-test
-        'rex.subscriber-test
+        'rex.watcher-test
         'rex.ext.cursor-test
         'rex.ext.action-creator-test
         'rex.ext.reducer-for-type-test

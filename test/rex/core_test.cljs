@@ -2,14 +2,14 @@
   (:require [rex.core :as cr]
             [rex.reducer :as rd]
             [rex.middleware :as mw]
-            [rex.subscriber :as sb]
+            [rex.watcher :as swt]
             [cljs.test :refer-macros [deftest testing is are]]))
 
 (defn setup! []
   (cr/reset-store!)
   (rd/reset-reducers!)
   (mw/reset-middlewares!)
-  (sb/reset-subscribers!))
+  (swt/reset-watchers!))
 
 (deftest reset-store-test
   (do
@@ -83,7 +83,7 @@
              @log-of-actions))
       (is (= {}  (cr/get-store))))))
 
-(deftest notify-subscribers-on-change
+(deftest notify-watchers-on-change
   (do
     (setup!)
     (let [watch-vec (atom [])]
@@ -99,7 +99,7 @@
               (assoc state :field (conj old-value event-value))
               state))))
 
-      (sb/defsubscriber
+      (swt/defwatcher
         (fn [old-value new-value]
           (swap! watch-vec conj [old-value new-value])))
 

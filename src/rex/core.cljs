@@ -2,7 +2,7 @@
   (:require [rex.reducer :as rc]
             [rex.middleware :as mw]
             [rex.dispatch :as dpt]
-            [rex.subscriber :as sb]))
+            [rex.watcher :as swt]))
 
 (defonce *store-init-value* {})
 (defonce store (atom *store-init-value*))
@@ -20,6 +20,6 @@
   (dpt/dispatch get-store
                 update-store
                 rc/get-reducers
-                sb/get-subscribers
+                swt/get-watchers
                 mw/get-middlewares
                 action))

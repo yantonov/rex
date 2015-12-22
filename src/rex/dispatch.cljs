@@ -3,7 +3,7 @@
 (defn- dispatch-using-reducers [get-store
                                 update-store
                                 get-reducers
-                                get-subscribers
+                                get-watchers
                                 action]
   (let [old-store-value (get-store)]
     ;; TODO: single update
@@ -13,7 +13,7 @@
         (update-store (fn [store-value]
                         (reduce-fn store-value action)))))
     (let [new-store-value (get-store)]
-      (doseq [subscriber (get-subscribers)]
+      (doseq [watcher (get-watchers)]
         (let [{callback :fn} subscriber]
           (callback old-store-value
                     new-store-value))))
@@ -22,7 +22,7 @@
 (defn- dispatch-using-middlewares [get-store
                                    update-store
                                    get-reducers
-                                   get-subscribers
+                                   get-watchers
                                    get-middlewares]
   (reduce (fn [accumulated-dispatch-fn middleware]
             (let [{name :name
@@ -35,19 +35,19 @@
                    get-store
                    update-store
                    get-reducers
-                   get-subscribers)
+                   get-watchers)
           (get-middlewares)))
 
 (defn dispatch [get-store
                 update-store
                 get-reducers
-                get-subscribers
+                get-watchers
                 get-middlewares
                 action]
   (let [dispatch-fn (dispatch-using-middlewares
-                             get-store
-                             update-store
-                             get-reducers
-                             get-subscribers
-                             get-middlewares)]
+                     get-store
+                     update-store
+                     get-reducers
+                     get-watchers
+                     get-middlewares)]
     (dispatch-fn action)))
