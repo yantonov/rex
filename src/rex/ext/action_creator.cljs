@@ -5,5 +5,7 @@
   [action get-store next-dispatch-fn]
   (if (fn? action)
     (let [action-creator action]
-      (action-creator next-dispatch-fn get-store))
+      (do
+        (action-creator next-dispatch-fn get-store)
+        (get-store)))
     (next-dispatch-fn action)))

@@ -57,3 +57,24 @@
     (is (= {} @before))
     (is (= {:field [:value1]} @middle))
     (is (= {:field [:value1 :value2]} @after))))
+
+(deftest dispatch-fn-returns-final-state-does-not-depends-on-action-creator-result
+  (setup!)
+
+  (mw/defmiddleware :action-creator-middleware
+    sut/action-creator-middleware)
+
+  (rd/defreducer :some-reducer
+    (fn [state action]
+      (let [old-field-value (get state :field [])
+            event-value (get action :value :no-value)]
+        (assoc-in state [:field] (conj old-field-value event-value)))))
+
+  (is (= {:field [:value1 :value2]}
+       (cr/dispatch
+        (fn [dispatch-fn get-store]
+          (dispatch-fn {:value :value1})
+          (dispatch-fn {:value :value2})
+          nil))))
+
+  (is (= {:field [:value1 :value2]} (cr/get-store))))
