@@ -6,17 +6,18 @@
                                 get-watchers
                                 action]
   (let [old-store-value (get-store)]
-    ;; TODO: single update
-    (doseq [reducer (get-reducers)]
-      (let [{name :name
-             reduce-fn :fn} reducer]
-        (update-store (fn [store-value]
-                        (reduce-fn store-value action)))))
+    (update-store (fn [initial-state]
+                    (reduce (fn [state reducer]
+                              (let [{name :name
+                                     reduce-fn :fn} reducer]
+                                (reduce-fn state action)))
+                            initial-state
+                            (get-reducers))))
     (let [new-store-value (get-store)]
-      (doseq [watcher (get-watchers)]
-        (let [{callback :fn} watcher]
-          (callback old-store-value
-                    new-store-value))))
+            (doseq [watcher (get-watchers)]
+              (let [{callback :fn} watcher]
+                (callback old-store-value
+                          new-store-value))))
     (get-store)))
 
 (defn- dispatch-using-middlewares [get-store
