@@ -20,11 +20,11 @@
                     new-store-value))))
     (get-store)))
 
-(defn- dispatch-using-middlewares [get-store
-                                   update-store
-                                   get-reducers
-                                   get-watchers
-                                   get-middlewares]
+(defn- wrap-middleware [get-store
+                        update-store
+                        get-reducers
+                        get-watchers
+                        get-middlewares]
   (reduce (fn [accumulated-dispatch-fn middleware]
             (let [{name :name
                    middleware-fn :fn} middleware]
@@ -45,7 +45,7 @@
                 get-watchers
                 get-middlewares
                 action]
-  (let [dispatch-fn (dispatch-using-middlewares
+  (let [dispatch-fn (wrap-middleware
                      get-store
                      update-store
                      get-reducers

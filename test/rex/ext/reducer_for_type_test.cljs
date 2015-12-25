@@ -2,15 +2,10 @@
   (:require [rex.ext.reducer-for-type :as sut]
             [cljs.test :refer-macros [deftest testing is are]]
             [rex.core :as cr]
-            [rex.reducer :as rd]
-            [rex.middleware :as mw]
-            [rex.watcher :as sb]))
+            [rex.core-helpers :as h]))
 
 (defn setup! []
-  (cr/reset-store!)
-  (rd/reset-reducers!)
-  (mw/reset-middlewares!)
-  (sb/reset-watchers!))
+  (h/reset-core!))
 
 (deftest dispatch-only-for-action-with-interested-type
   (do

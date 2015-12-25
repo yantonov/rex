@@ -3,13 +3,26 @@
             [rex.reducer :as rd]
             [rex.middleware :as mw]
             [rex.watcher :as swt]
+            [rex.core-helpers :as h]
             [cljs.test :refer-macros [deftest testing is are]]))
 
 (defn setup! []
-  (cr/reset-store!)
-  (rd/reset-reducers!)
-  (mw/reset-middlewares!)
-  (swt/reset-watchers!))
+  (h/reset-core!))
+
+(def simple-reducer
+  (fn [state action]
+    (let [old-value (get state :field [])
+          event-value (get action :value :no-value)]
+      (assoc-in state [:field] (conj old-value event-value)))))
+
+(def conditional-reducer
+  (fn [state action]
+    (let [old-value (get state :field [])
+          event-type (:type action)
+          event-value (get action :value :no-value)]
+      (if (= event-type :type-for-reducer)
+        (assoc-in state [:field] (conj old-value event-value))
+        state))))
 
 (deftest reset-store-test
   (do
@@ -19,11 +32,7 @@
 (deftest dispatch-simple-event-test
   (do
     (setup!)
-    (rd/defreducer :some-reducer
-      (fn [state action]
-        (let [old-field-value (get state :field [])
-              event-value (get action :value :no-value)]
-          (assoc-in state [:field] (conj old-field-value event-value)))))
+    (rd/defreducer :some-reducer simple-reducer)
 
     (cr/dispatch {:value :value1})
     (is (= [:value1] (:field (cr/get-store))))
@@ -37,24 +46,17 @@
 (deftest dispatch-conditional-reducer-test
   (do
     (setup!)
-    (rd/defreducer :some-reducer
-      (fn [state action]
-        (let [old-value (get state :field [])
-              event-type (get action :type)
-              event-value (get action :value :no-value)]
-          (if (= event-type :type1)
-            (assoc-in state [:field] (conj old-value event-value))
-            state))))
+    (rd/defreducer :some-reducer conditional-reducer)
 
-    (cr/dispatch {:type :type1
+    (cr/dispatch {:type :type-for-reducer
                   :value :value1})
     (is (= [:value1] (:field (cr/get-store))))
 
-    (cr/dispatch {:type :type234
+    (cr/dispatch {:type :some-other-event-type
                   :value :value2})
     (is (= [:value1] (:field (cr/get-store))))
 
-    (cr/dispatch {:type :type1
+    (cr/dispatch {:type :type-for-reducer
                   :value :value3})
     (is (= [:value1 :value3] (:field (cr/get-store))))))
 
@@ -88,35 +90,26 @@
     (setup!)
     (let [watch-vec (atom [])]
 
-      (rd/defreducer :some-reducer
-        (fn [state
-             action]
-          (let [old-value (get state :field [])
-                event-type (:type action)
-                event-value (get action :value :no-value)]
-
-            (if (= event-type :some-event-type)
-              (assoc state :field (conj old-value event-value))
-              state))))
+      (rd/defreducer :some-reducer conditional-reducer)
 
       (swt/defwatcher
         (fn [old-value new-value]
           (swap! watch-vec conj [old-value new-value])))
 
-      (cr/dispatch {:type :some-event-type
+      (cr/dispatch {:type :type-for-reducer
                     :value :value1})
       (is (= [[{} {:field [:value1]}]]
              @watch-vec))
 
-      (cr/dispatch {:type :some-event-type
+      (cr/dispatch {:type :type-for-reducer
                     :value :value2})
       (is (= [[{} {:field [:value1]}]
               [{:field [:value1]} {:field [:value1 :value2]}]]
              @watch-vec))
 
       (cr/dispatch {:type :other-event-type
-                    :other-value :other-value})
+      :other-value :other-value})
       (is (= [[{} {:field [:value1]}]
-              [{:field [:value1]} {:field [:value1 :value2]}]
-              [{:field [:value1 :value2]} {:field [:value1 :value2]}]]
-             @watch-vec)))))
+      [{:field [:value1]} {:field [:value1 :value2]}]
+      [{:field [:value1 :value2]} {:field [:value1 :value2]}]]
+      @watch-vec)))))

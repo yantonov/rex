@@ -1,6 +1,6 @@
 # rex
 
-Simple state management for client side.
+Redux insired state management written in clojurescript.
 
 ## License
 

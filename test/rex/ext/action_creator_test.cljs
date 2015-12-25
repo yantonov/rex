@@ -4,13 +4,10 @@
             [rex.core :as cr]
             [rex.reducer :as rd]
             [rex.middleware :as mw]
-            [rex.watcher :as sb]))
+            [rex.core-helpers :as h]))
 
 (defn setup! []
-  (cr/reset-store!)
-  (rd/reset-reducers!)
-  (mw/reset-middlewares!)
-  (sb/reset-watchers!))
+  (h/reset-core!))
 
 (deftest composite-action-test
   (setup!)
