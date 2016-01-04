@@ -13,7 +13,9 @@
 (deftest defreducer-with-name-test
   (do
     (setup!)
-    (r/defreducer :r1 r/id-reducer)
+    (r/defreducer (with-meta (fn [store action]
+                               store)
+                    {:name :r1}))
     (let [reducers (r/get-reducers)]
       (is (= 1 (count reducers)))
       (let [reducer (first reducers)]

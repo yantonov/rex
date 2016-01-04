@@ -10,12 +10,9 @@
   @reducers)
 
 (defn defreducer
-  "register reducer with name (for debug purposes) or without it"
-  ([name reduce-fn]
-   (swap! reducers conj {:name name
-                         :fn reduce-fn}))
-  ([reduce-fn]
-   (defreducer nil reduce-fn)))
+  [reduce-fn]
+  (swap! reducers conj {:name (get (meta reduce-fn) :name nil)
+                        :fn reduce-fn}))
 
 (defn id-reducer
   "trivial reducer, returns state as is"

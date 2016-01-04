@@ -11,7 +11,6 @@
   (do
     (setup!)
     (sut/reducer-for-type
-     :some-reducer
      :event-type-1
      (fn [state action]
        (let [old-field-value (get state :field [])

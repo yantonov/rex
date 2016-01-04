@@ -15,7 +15,7 @@
   (mw/defmiddleware :action-creator-middleware
     sut/action-creator-middleware)
 
-  (rd/defreducer :some-reducer
+  (rd/defreducer
     (fn [state action]
       (let [old-field-value (get state :field [])
             event-value (get action :value :no-value)]
@@ -34,7 +34,7 @@
   (mw/defmiddleware :action-creator-middleware
     sut/action-creator-middleware)
 
-  (rd/defreducer :some-reducer
+  (rd/defreducer
     (fn [state action]
       (let [old-field-value (get state :field [])
             event-value (get action :value :no-value)]
@@ -61,7 +61,7 @@
   (mw/defmiddleware :action-creator-middleware
     sut/action-creator-middleware)
 
-  (rd/defreducer :some-reducer
+  (rd/defreducer
     (fn [state action]
       (let [old-field-value (get state :field [])
             event-value (get action :value :no-value)]
@@ -82,7 +82,7 @@
   (mw/defmiddleware :action-creator-middleware
     sut/action-creator-middleware)
 
-  (rd/defreducer :some-reducer
+  (rd/defreducer
     (fn [state action]
       (let [old-field-value (get state :field [])
             event-value (get action :value :no-value)]

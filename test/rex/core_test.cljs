@@ -32,7 +32,7 @@
 (deftest dispatch-simple-event-test
   (do
     (setup!)
-    (rd/defreducer :some-reducer simple-reducer)
+    (rd/defreducer simple-reducer)
 
     (cr/dispatch {:value :value1})
     (is (= [:value1] (:field (cr/get-store))))
@@ -46,7 +46,7 @@
 (deftest dispatch-conditional-reducer-test
   (do
     (setup!)
-    (rd/defreducer :some-reducer conditional-reducer)
+    (rd/defreducer conditional-reducer)
 
     (cr/dispatch {:type :type-for-reducer
                   :value :value1})
@@ -90,7 +90,7 @@
     (setup!)
     (let [watch-vec (atom [])]
 
-      (rd/defreducer :some-reducer conditional-reducer)
+      (rd/defreducer conditional-reducer)
 
       (swt/defwatcher
         (fn [old-value new-value]
