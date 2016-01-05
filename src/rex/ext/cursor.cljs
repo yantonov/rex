@@ -10,6 +10,10 @@
 
   (zoom-in [this feature])
 
+  ;; TODO:
+  ;; get rid of update-state, get-state
+  ;; store must provide explicit interface for reducers
+  ;; for example with get-value(key), set-value(key,value) semantics
   (update-state [this state new-local-state])
 
   (get-state [this state]))
