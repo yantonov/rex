@@ -12,7 +12,7 @@
 (deftest composite-action-test
   (setup!)
 
-  (mw/defmiddleware :action-creator-middleware
+  (mw/defmiddleware
     sut/action-creator-middleware)
 
   (rd/defreducer
@@ -31,7 +31,7 @@
 (deftest composite-action-can-get-store-state
   (setup!)
 
-  (mw/defmiddleware :action-creator-middleware
+  (mw/defmiddleware
     sut/action-creator-middleware)
 
   (rd/defreducer
@@ -58,7 +58,7 @@
 (deftest dispatch-fn-returns-final-state-does-not-depends-on-action-creator-result
   (setup!)
 
-  (mw/defmiddleware :action-creator-middleware
+  (mw/defmiddleware
     sut/action-creator-middleware)
 
   (rd/defreducer
@@ -79,7 +79,7 @@
 (deftest action-creator-can-have-another-action-creator-inside
   (setup!)
 
-  (mw/defmiddleware :action-creator-middleware
+  (mw/defmiddleware
     sut/action-creator-middleware)
 
   (rd/defreducer

@@ -13,7 +13,8 @@
 (deftest defmiddleware-with-name-test
   (do
     (setup!)
-    (mw/defmiddleware :middleware1 mw/id-middleware)
+    (mw/defmiddleware (with-meta mw/id-middleware
+                        {:name :middleware1}))
     (let [middlewares (mw/get-middlewares)]
       (is (= 1 (count middlewares)))
       (let [m (first middlewares)]

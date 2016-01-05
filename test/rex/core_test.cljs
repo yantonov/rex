@@ -64,7 +64,7 @@
   (do
     (setup!)
     (let [log-of-actions (atom [])]
-      (mw/defmiddleware :log-action
+      (mw/defmiddleware
         (fn [action store next-dispatch-fn]
           (do
             (swap! log-of-actions conj action)
@@ -108,8 +108,8 @@
              @watch-vec))
 
       (cr/dispatch {:type :other-event-type
-      :other-value :other-value})
+                    :other-value :other-value})
       (is (= [[{} {:field [:value1]}]
-      [{:field [:value1]} {:field [:value1 :value2]}]
-      [{:field [:value1 :value2]} {:field [:value1 :value2]}]]
-      @watch-vec)))))
+              [{:field [:value1]} {:field [:value1 :value2]}]
+              [{:field [:value1 :value2]} {:field [:value1 :value2]}]]
+             @watch-vec)))))

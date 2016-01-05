@@ -10,12 +10,9 @@
   @middlewares)
 
 (defn defmiddleware
-  "register middleware with name (for debug purposes) or without it"
-  ([name middleware]
-   (swap! middlewares conj {:name name
-                              :fn middleware}))
-  ([middleware]
-   (defmiddleware nil middleware)))
+  [middleware]
+  (swap! middlewares conj {:name (get (meta middleware) :name nil)
+                           :fn middleware}))
 
 (defn id-middleware
   "trivial middleware, just delegate to next dispatch function"
