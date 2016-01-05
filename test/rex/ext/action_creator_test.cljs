@@ -7,10 +7,7 @@
             [rex.core-helpers :as h]))
 
 (defn setup! []
-  (h/reset-core!))
-
-(deftest composite-action-test
-  (setup!)
+  (h/reset-core!)
 
   (mw/defmiddleware
     sut/action-creator-middleware)
@@ -19,7 +16,10 @@
     (fn [state action]
       (let [old-field-value (get state :field [])
             event-value (get action :value :no-value)]
-        (assoc-in state [:field] (conj old-field-value event-value)))))
+        (assoc-in state [:field] (conj old-field-value event-value))))))
+
+(deftest composite-action-test
+  (setup!)
 
   (cr/dispatch
    (fn [dispatch-fn get-store]
@@ -30,15 +30,6 @@
 
 (deftest composite-action-can-get-store-state
   (setup!)
-
-  (mw/defmiddleware
-    sut/action-creator-middleware)
-
-  (rd/defreducer
-    (fn [state action]
-      (let [old-field-value (get state :field [])
-            event-value (get action :value :no-value)]
-        (assoc-in state [:field] (conj old-field-value event-value)))))
 
   (let [before (atom nil)
         middle (atom nil)
@@ -58,15 +49,6 @@
 (deftest dispatch-fn-returns-final-state-does-not-depends-on-action-creator-result
   (setup!)
 
-  (mw/defmiddleware
-    sut/action-creator-middleware)
-
-  (rd/defreducer
-    (fn [state action]
-      (let [old-field-value (get state :field [])
-            event-value (get action :value :no-value)]
-        (assoc-in state [:field] (conj old-field-value event-value)))))
-
   (is (= {:field [:value1 :value2]}
          (cr/dispatch
           (fn [dispatch-fn get-store]
@@ -78,15 +60,6 @@
 
 (deftest action-creator-can-have-another-action-creator-inside
   (setup!)
-
-  (mw/defmiddleware
-    sut/action-creator-middleware)
-
-  (rd/defreducer
-    (fn [state action]
-      (let [old-field-value (get state :field [])
-            event-value (get action :value :no-value)]
-        (assoc-in state [:field] (conj old-field-value event-value)))))
 
   (cr/dispatch
    (fn [dispatch-fn get-store]
