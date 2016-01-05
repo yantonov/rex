@@ -13,11 +13,11 @@
 (deftest defsubscriver-test-with-meta
   (do
     (setup!)
-    (sc/defwatcher :some-meta sc/empty-watcher)
+    (sc/defwatcher (with-meta sc/empty-watcher {:meta-field :meta-value}))
     (let [watchers (sc/get-watchers)]
       (is (= 1 (count watchers)))
       (let [watcher (first watchers)]
-        (is (= :some-meta (:meta watcher)))
+        (is (= {:meta-field :meta-value} (:meta watcher)))
         (is (not (nil? (:fn watcher))))))))
 
 (deftest defsubscriver-test-without-meta

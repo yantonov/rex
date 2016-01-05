@@ -14,9 +14,6 @@
   )
 
 (defn defwatcher
-  ([meta watcher-callback]
-   (swap! watchers conj {:meta meta
-                         :fn watcher-callback}))
-
-  ([callback]
-   (defwatcher nil callback)))
+  [watcher-callback]
+  (swap! watchers conj {:meta (meta watcher-callback)
+                        :fn watcher-callback}))
