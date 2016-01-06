@@ -1,4 +1,4 @@
-tw(defproject rex "0.0.1-SNAPSHOT"
+(defproject rex "0.0.1-SNAPSHOT"
   :description "simple state management for client side development"
   :url "https://github.com/yantonov/rex"
   :license {:name "Eclipse Public License"
