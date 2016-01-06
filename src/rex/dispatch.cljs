@@ -17,6 +17,7 @@
       (doseq [watcher (get-watchers)]
         (let [{callback :fn} watcher]
           (callback old-store-value
+                    action
                     new-store-value))))
     (get-store)))
 

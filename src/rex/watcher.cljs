@@ -9,7 +9,7 @@
 (defn get-watchers []
   @watchers)
 
-(defn empty-watcher [old-value new-value]
+(defn empty-watcher [old-value action new-value]
   ;; do something
   )
 

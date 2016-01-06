@@ -93,7 +93,7 @@
       (rd/defreducer conditional-reducer)
 
       (swt/defwatcher
-        (fn [old-value new-value]
+        (fn [old-value action new-value]
           (swap! watch-vec conj [old-value new-value])))
 
       (cr/dispatch {:type :type-for-reducer
