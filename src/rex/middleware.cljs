@@ -16,5 +16,5 @@
 
 (defn id-middleware
   "trivial middleware, just delegate to next dispatch function"
-  [cursor action store next-dispatch-fn]
-  (next-dispatch-fn cursor action))
+  [action store next-dispatch-fn]
+  (next-dispatch-fn action store next-dispatch-fn))

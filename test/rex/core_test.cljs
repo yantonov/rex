@@ -64,6 +64,7 @@
   (do
     (setup!)
     (let [log-of-actions (atom [])]
+      (mw/defmiddleware mw/id-middleware)
       (mw/defmiddleware
         (fn [action store next-dispatch-fn]
           (do
