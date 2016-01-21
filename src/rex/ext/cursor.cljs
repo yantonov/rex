@@ -8,15 +8,7 @@
 
   (featured [this field features])
 
-  (zoom-in [this feature])
-
-  ;; TODO:
-  ;; get rid of update-state, get-state
-  ;; store must provide explicit interface for reducers
-  ;; for example with get-value(key), set-value(key,value) semantics
-  (update-state [this state new-local-state])
-
-  (get-state [this state]))
+  (zoom-in [this feature]))
 
 (deftype Cursor [items]
   ICursor
@@ -39,16 +31,16 @@
                    (not (nil? (some #(= % feature)
                                     (:features item)))))
                  items)]
-      (Cursor. items)))
-
-  (update-state [this state new-local-state]
-    (let [path (cursor-key this)]
-      (if (empty? path)
-        new-local-state
-        (assoc-in state (cursor-key this) new-local-state))))
-
-  (get-state [this state]
-    (get-in state (cursor-key this))))
+      (Cursor. items))))
 
 (defn make-cursor []
   (Cursor. []))
+
+(defn update-state [this state new-local-state]
+  (let [path (cursor-key this)]
+    (if (empty? path)
+      new-local-state
+      (assoc-in state (cursor-key this) new-local-state))))
+
+(defn get-state [this state]
+  (get-in state (cursor-key this)))
