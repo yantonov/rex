@@ -1,3 +1,3 @@
 #!/bin/sh
 
-lein cljsbuild auto unittest
+lein cljsbuild auto dev

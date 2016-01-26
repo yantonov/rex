@@ -5,7 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.170"]]
-  :plugins [[lein-cljsbuild "1.1.1"]]
+  :profiles {:dev {:plugins [[lein-cljsbuild "1.1.1"]]}}
   :source-paths ["src"]
   :cljsbuild
   {:builds
@@ -17,7 +17,7 @@
                 :optimizations :whitespace
                 :pretty-print false}}
 
-    :unittest
+    :dev
     {:source-paths ["src" "test"]
      :compiler {:output-to "target/rex.testable.js"
                 :optimizations :whitespace
