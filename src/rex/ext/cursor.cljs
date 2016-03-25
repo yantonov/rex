@@ -1,29 +1,52 @@
 (ns rex.ext.cursor
   (:require [rex.utils :as util]))
 
+(defrecord CursorItem [field features])
+
+(defn- add-features [cursor-item features]
+  (CursorItem. (:field cursor-item)
+               (concat (vec (:features cursor-item))
+                       features)))
+
 (defprotocol ICursor
+  (is-empty [this])
+
   (cursor-key [this])
 
   (nest [this field])
 
-  (featured [this field features])
+  (parent [this])
+
+  (featured [this features])
+
+  (features [this])
 
   (zoom-in [this feature]))
 
 (deftype Cursor [items]
   ICursor
+  (is-empty [_]
+    (empty? items))
+
   (cursor-key [_] (map :field items))
 
   (nest [this field]
-    (featured this field []))
+    (Cursor. (conj items (CursorItem. field []))))
 
-  (featured [_ field features]
-    (let [feature-list (if (nil? features)
-                         []
-                         features)]
-      (Cursor. (conj items
-                     {:field field
-                      :features feature-list}))))
+  (parent [this]
+    (Cursor. (vec (butlast items))))
+
+  (featured [this features]
+    (if (is-empty this)
+      this
+      (let [last-item (last items)]
+        (Cursor. (conj (vec (butlast items))
+                       (add-features last-item features))))))
+
+  (features [this]
+    (if (is-empty this)
+      []
+      (:features (last items))))
 
   (zoom-in [_ feature]
     (let [items (util/take-until-first

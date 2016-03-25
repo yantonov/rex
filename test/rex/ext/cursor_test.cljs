@@ -6,16 +6,49 @@
   (let [c (sut/make-cursor)]
     (is (= (sut/cursor-key c) []))))
 
+(deftest empty-cursor-test
+  (let [c (sut/make-cursor)]
+    (is (sut/is-empty c))))
+
 (deftest nest-field-test
-  (let [c (sut/make-cursor)
-        n (sut/featured c "fieldname"  ["feature1" "feature2"])]
-    (is (= (sut/cursor-key n) ["fieldname"]))))
+  (let [c (-> (sut/make-cursor)
+              (sut/nest "fieldname"))]
+    (is (= (sut/cursor-key c) ["fieldname"]))))
+
+(deftest parent-test
+  (let [c (-> (sut/make-cursor)
+              (sut/nest "f1")
+              (sut/nest "f2"))]
+    (is (= (sut/cursor-key c)
+           ["f1" "f2"]))
+
+    (is (= (sut/cursor-key (-> c
+                               (sut/parent)))
+           ["f1"]))
+
+    (is (= (sut/cursor-key (-> c
+                               (sut/parent)
+                               (sut/parent)))
+           []))
+
+    (is (= (sut/cursor-key (-> c
+                               (sut/parent)
+                               (sut/parent)
+                               (sut/parent)))
+           []))))
+
+(deftest featured-test
+  (let [c (-> (sut/make-cursor)
+              (sut/nest "field")
+              (sut/featured ["feature"]))]
+    (is (= (sut/features c) ["feature"]))))
 
 (deftest zoom-in-found-feature-test
   (let [c (sut/make-cursor)
         n (-> c
               (sut/nest "field1")
-              (sut/featured "field2" ["feature2"]))]
+              (sut/nest "field2")
+              (sut/featured ["feature2"]))]
     (is (= ["field1" "field2"]
            (sut/cursor-key (sut/zoom-in n "feature2"))))))
 
@@ -23,7 +56,8 @@
   (let [c (sut/make-cursor)
         n (-> c
               (sut/nest "field1")
-              (sut/featured "field2" ["feature2"]))]
+              (sut/nest "field2")
+              (sut/featured ["feature2"]))]
     (is (= ["field1" "field2"]
            (sut/cursor-key (sut/zoom-in n "unknown-feature"))))))
 
@@ -31,9 +65,11 @@
   (let [c (sut/make-cursor)
         n (-> c
               (sut/nest "field1")
-              (sut/featured "field2" ["feature123"])
+              (sut/nest "field2")
+              (sut/featured ["feature123"])
               (sut/nest "field3")
-              (sut/featured "field4" ["feature123"]))]
+              (sut/nest "field4")
+              (sut/featured ["feature123"]))]
     (is (= ["field1" "field2"]
            (sut/cursor-key (sut/zoom-in n "feature123"))))))
 
