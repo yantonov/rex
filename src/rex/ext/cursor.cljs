@@ -59,11 +59,18 @@
 (defn make-cursor []
   (Cursor. []))
 
-(defn update-state [this state new-local-state]
+(defn set-state [this state new-local-state]
   (let [path (cursor-key this)]
     (if (empty? path)
       new-local-state
-      (assoc-in state (cursor-key this) new-local-state))))
+      (assoc-in state path new-local-state))))
+
+(defn update-state [this state update-state-fn]
+  (let [path (cursor-key this)]
+    (if (empty? path)
+      (update-state-fn state)
+      (let [original-local-state (get-in state path)]
+        (assoc-in state path (update-state-fn original-local-state))))))
 
 (defn get-state [this state]
   (get-in state (cursor-key this)))
