@@ -73,20 +73,35 @@
     (is (= ["field1" "field2"]
            (sut/cursor-key (sut/zoom-in n "feature123"))))))
 
-(deftest update-nested-state-test
+(deftest set-nested-state-test
   (let [c (sut/make-cursor)
         n (-> c
               (sut/nest "a")
               (sut/nest "b"))
         m {"a" {"b" 1}}]
     (is (= {"a" {"b" 2}}
-           (sut/update-state n m 2)))))
+           (sut/set-state n m 2)))))
 
-(deftest update-whole-state-test
+(deftest set-whole-state-test
   (let [c (sut/make-cursor)
         m {"a" {"b" 1}}]
     (is (= {"c" 123}
-           (sut/update-state c m {"c" 123})))))
+           (sut/set-state c m {"c" 123})))))
+
+(deftest update-local-state-test
+  (let [c (sut/make-cursor)
+        nested (-> c
+                   (sut/nest "a")
+                   (sut/nest "b"))
+        m {"a" {"b" 123}}]
+    (is (= {"a" {"b" 124}}
+           (sut/update-state nested m inc)))))
+
+(deftest update-global-state-test
+  (let [c (sut/make-cursor)
+        m {"a" {"b" 123}}]
+    (is (= {"a" {"b" 124}}
+           (sut/update-state c m (fn [s] (assoc-in s ["a" "b"] 124)))))))
 
 (deftest get-state-with-empty-cursor-test
   (let [c (sut/make-cursor)
