@@ -35,12 +35,12 @@
         middle (atom nil)
         after (atom nil)]
     (cr/dispatch
-     (fn [get-store]
-       (reset! before (get-store))
+     (fn []
+       (reset! before (cr/get-store))
        (cr/dispatch {:value :value1})
-       (reset! middle (get-store))
+       (reset! middle (cr/get-store))
        (cr/dispatch {:value :value2})
-       (reset! after (get-store))))
+       (reset! after (cr/get-store))))
 
     (is (= {} @before))
     (is (= {:field [:value1]} @middle))
