@@ -22,9 +22,9 @@
   (setup!)
 
   (cr/dispatch
-   (fn [get-store]
-     (cr/dispatch {:value :value1})
-     (cr/dispatch {:value :value2})))
+   (fn [dispatch-fn get-store]
+     (dispatch-fn {:value :value1})
+     (dispatch-fn {:value :value2})))
 
   (is (= [:value1 :value2] (:field (cr/get-store)))))
 
@@ -35,11 +35,11 @@
         middle (atom nil)
         after (atom nil)]
     (cr/dispatch
-     (fn [get-store]
+     (fn [dispatch-fn get-store]
        (reset! before (get-store))
-       (cr/dispatch {:value :value1})
+       (dispatch-fn {:value :value1})
        (reset! middle (get-store))
-       (cr/dispatch {:value :value2})
+       (dispatch-fn {:value :value2})
        (reset! after (get-store))))
 
     (is (= {} @before))
@@ -51,9 +51,9 @@
 
   (is (= {:field [:value1 :value2]}
          (cr/dispatch
-          (fn [get-store]
-            (cr/dispatch {:value :value1})
-            (cr/dispatch {:value :value2})
+          (fn [dispatch-fn get-store]
+            (dispatch-fn {:value :value1})
+            (dispatch-fn {:value :value2})
             nil))))
 
   (is (= {:field [:value1 :value2]} (cr/get-store))))
@@ -62,9 +62,9 @@
   (setup!)
 
   (cr/dispatch
-   (fn [get-store]
-     (cr/dispatch {:value :value1})
-     (cr/dispatch (fn [s]
-                    (cr/dispatch {:value :value2})))))
+   (fn [dispatch-fn get-store]
+     (dispatch-fn {:value :value1})
+     (dispatch-fn (fn [d s]
+                    (d {:value :value2})))))
 
   (is (= [:value1 :value2] (:field (cr/get-store)))))
